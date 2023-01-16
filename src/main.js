@@ -1,7 +1,7 @@
 import { searchCep } from './helpers/cepFunctions';
 import { fetchProductsList, fetchProduct } from './helpers/fetchFunctions';
 import { createProductElement, createCartProductElement } from './helpers/shopFunctions';
-import { saveCartID } from './helpers/cartFunctions';
+import { saveCartID, getSavedCartIDs } from './helpers/cartFunctions';
 import './style.css';
 
 const productsContainer = document.querySelector('.products');
@@ -34,6 +34,22 @@ const handleAddCartProduct = async (product) => {
   }
 };
 
+console.log(getSavedCartIDs());
+
+const handleGetAllSavedProducts = () => {
+  const idsProducts = getSavedCartIDs();
+
+  idsProducts.map(async (id) => {
+    const productData = await fetchProduct(id);
+
+    productsCart.appendChild(createCartProductElement(productData));
+  });
+};
+
+handleGetAllSavedProducts();
+
 productsContainer.addEventListener('click', handleAddCartProduct);
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
+
+// Precisa usar o promise.all
