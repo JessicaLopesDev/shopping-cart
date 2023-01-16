@@ -5,10 +5,19 @@ import './style.css';
 
 const productsContainer = document.querySelector('.products');
 
-const productsList = await fetchProductsList('computador');
-if (productsList) {
+try {
+  const productsList = await fetchProductsList('computador');
+
+  if (productsList) {
+    productsContainer.innerHTML = '';
+    productsList.map((item) => productsContainer.appendChild(createProductElement(item)));
+  }
+} catch (error) {
+  const errorElement = document.createElement('p');
+  errorElement.className = 'error';
+  errorElement.innerText = 'Algum erro ocorreu, recarregue a página e tente novamente';
   productsContainer.innerHTML = '';
-  productsList.map((item) => productsContainer.appendChild(createProductElement(item)));
+  productsContainer.appendChild(errorElement);
 }
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
