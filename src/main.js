@@ -1,9 +1,11 @@
 import { searchCep } from './helpers/cepFunctions';
-import { fetchProductsList } from './helpers/fetchFunctions';
-import { createProductElement } from './helpers/shopFunctions';
+import { fetchProductsList, fetchProduct } from './helpers/fetchFunctions';
+import { createProductElement, createCartProductElement } from './helpers/shopFunctions';
+import { saveCartID } from './helpers/cartFunctions';
 import './style.css';
 
 const productsContainer = document.querySelector('.products');
+const productsCart = document.querySelector('.cart__products');
 
 try {
   const productsList = await fetchProductsList('computador');
@@ -19,5 +21,19 @@ try {
   productsContainer.innerHTML = '';
   productsContainer.appendChild(errorElement);
 }
+
+const handleAddCartProduct = async (product) => {
+  const idCurrentProduct = product.target.parentNode.firstChild.innerText;
+
+  if (idCurrentProduct) {
+    saveCartID(idCurrentProduct);
+
+    const productData = await fetchProduct(idCurrentProduct);
+
+    productsCart.appendChild(createCartProductElement(productData));
+  }
+};
+
+productsContainer.addEventListener('click', handleAddCartProduct);
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
